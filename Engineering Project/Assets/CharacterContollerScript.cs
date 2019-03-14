@@ -9,11 +9,13 @@ public class CharacterContollerScript : MonoBehaviour
     public Transform groundCheck;
     public Transform wallCheck;
     public LayerMask whatIsGround;
+	public LayerMask whatIsWall;
 
     public float speed = 5f;
     public float jumpForce = 500f;
     private float radius = 0.3f;
     private bool grounded = false;
+	private bool wallTouch = false;
 
     // Start is called before the first frame update
     void Start()
@@ -24,7 +26,16 @@ public class CharacterContollerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+		if (Input.GetKeyDown(KeyCode.R))
+		{
+			transform.position = new Vector2 (0,0);
+		}
 
+		if (wallTouch)
+		{
+			transform.Rotate (0,180,0, Space.Self);
+			wallTouch = false;
+		}
     }
 
     private void FixedUpdate()
@@ -33,9 +44,12 @@ public class CharacterContollerScript : MonoBehaviour
         rb.velocity = new Vector2(playerRight * speed, rb.velocity.y);
         grounded = Physics2D.OverlapCircle(groundCheck.position, radius, whatIsGround);
 
+		wallTouch = Physics2D.OverlapCircle(wallCheck.position, 0.1f, whatIsWall);
+
         if (grounded && Input.GetKey(KeyCode.Space))
         {
-            rb.AddForce(new Vector2(rb.velocity.x, jumpForce));
+			rb.velocity = new Vector2 (rb.velocity.x,0);
+			rb.AddForce(new Vector2(0, jumpForce));
         }
     }
 }
