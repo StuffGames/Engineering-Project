@@ -6,6 +6,7 @@ public class CharacterContollerScript : MonoBehaviour
 {
 
     private Rigidbody2D rb;
+    public Animator anim;
     public Transform groundCheck;
     public Transform wallCheck;
     public LayerMask whatIsGround;
@@ -13,9 +14,10 @@ public class CharacterContollerScript : MonoBehaviour
 
     public float speed = 5f;
     public float jumpForce = 500f;
-    private float radius = 0.3f;
-    private bool grounded = false;
-	private bool wallTouch = false;
+    private float radius = 0.1f;
+    private Vector2 size = new Vector2(0.78f,0.2f);
+    public bool grounded = false;
+	public bool wallTouch = false;
 
     // Start is called before the first frame update
     void Start()
@@ -29,6 +31,7 @@ public class CharacterContollerScript : MonoBehaviour
 		if (Input.GetKeyDown(KeyCode.R))
 		{
 			transform.position = new Vector2 (0,0);
+            rb.velocity = new Vector2(0, 0);
 		}
 
 		if (wallTouch)
@@ -42,14 +45,23 @@ public class CharacterContollerScript : MonoBehaviour
     {
         float playerRight = transform.right.x;
         rb.velocity = new Vector2(playerRight * speed, rb.velocity.y);
-        grounded = Physics2D.OverlapCircle(groundCheck.position, radius, whatIsGround);
+        grounded = Physics2D.OverlapBox(groundCheck.position, size, 0, whatIsGround);
 
-		wallTouch = Physics2D.OverlapCircle(wallCheck.position, 0.1f, whatIsWall);
+		wallTouch = Physics2D.OverlapCircle(wallCheck.position, radius, whatIsWall);
 
         if (grounded && Input.GetKey(KeyCode.Space))
         {
 			rb.velocity = new Vector2 (rb.velocity.x,0);
 			rb.AddForce(new Vector2(0, jumpForce));
+        }
+
+        if (rb.velocity.y < 0)
+        {
+            rb.gravityScale = 2.5f;
+        }
+        else
+        {
+            rb.gravityScale = 2;
         }
     }
 }

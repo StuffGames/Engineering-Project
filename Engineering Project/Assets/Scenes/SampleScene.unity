@@ -467,7 +467,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 55
   speed: 2.5
-  jumpForce: 300
+  jumpForce: 350
+  grounded: 0
+  wallTouch: 0
 --- !u!1 &1084831299
 GameObject:
   m_ObjectHideFlags: 0
