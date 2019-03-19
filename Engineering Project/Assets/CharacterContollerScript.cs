@@ -31,6 +31,7 @@ public class CharacterContollerScript : MonoBehaviour
 
         anim.SetFloat("playerSpeed", Mathf.Abs(rb.velocity.x));
         anim.SetFloat("airSpeed", rb.velocity.y);
+        anim.SetBool("isGrounded", grounded);
 
         if (Input.GetKeyDown(KeyCode.R))
 		{
