@@ -28,7 +28,11 @@ public class CharacterContollerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-		if (Input.GetKeyDown(KeyCode.R))
+
+        anim.SetFloat("playerSpeed", Mathf.Abs(rb.velocity.x));
+        anim.SetFloat("airSpeed", rb.velocity.y);
+
+        if (Input.GetKeyDown(KeyCode.R))
 		{
 			transform.position = new Vector2 (0,0);
             rb.velocity = new Vector2(0, 0);
@@ -53,6 +57,11 @@ public class CharacterContollerScript : MonoBehaviour
         {
 			rb.velocity = new Vector2 (rb.velocity.x,0);
 			rb.AddForce(new Vector2(0, jumpForce));
+            anim.SetBool("isJumping", true);
+        }
+        else if (grounded)
+        {
+            anim.SetBool("isJumping", false);
         }
 
         if (rb.velocity.y < 0)
