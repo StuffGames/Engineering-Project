@@ -7,6 +7,8 @@ public class CharacterContollerScript : MonoBehaviour
 
     private Rigidbody2D rb;
     public Animator anim;
+    public Transform canvasGM;
+    public GameObject heartPrefab;
     public Transform groundCheck;
     public Transform wallCheck;
     public LayerMask whatIsGround;
@@ -15,6 +17,7 @@ public class CharacterContollerScript : MonoBehaviour
     public float speed = 5f;
     public float jumpForce = 500f;
     private float radius = 0.1f;
+    private int lives;
     private Vector2 size = new Vector2(0.78f,0.2f);
     public bool grounded = false;
 	public bool wallTouch = false;
@@ -23,15 +26,26 @@ public class CharacterContollerScript : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+
+        lives = 3;
+
+        LivesUI();
     }
 
     // Update is called once per frame
     void Update()
     {
+        int currentLives = lives;
 
         anim.SetFloat("playerSpeed", Mathf.Abs(rb.velocity.x));
         anim.SetFloat("airSpeed", rb.velocity.y);
         anim.SetBool("isGrounded", grounded);
+
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            lives--;
+            Debug.Log(lives);
+        }
 
         if (Input.GetKeyDown(KeyCode.R))
 		{
@@ -44,6 +58,18 @@ public class CharacterContollerScript : MonoBehaviour
 			transform.Rotate (0,180,0, Space.Self);
 			wallTouch = false;
 		}
+
+        if (lives < 1)
+        {
+            Debug.Log("Game Over");
+            Time.timeScale = 0;
+        }
+
+        if (currentLives != lives)
+        {
+            LivesUI();
+        }
+
     }
 
     private void FixedUpdate()
@@ -74,4 +100,22 @@ public class CharacterContollerScript : MonoBehaviour
             rb.gravityScale = 2;
         }
     }
+
+    public void LivesUI()
+    {
+        foreach (Transform heart in canvasGM)
+        {
+            if(transform.tag != "Canvas")
+            {
+                Destroy(heart.gameObject);
+            }
+        }
+
+        for (int i = lives; i > 0; i--)
+        {
+            GameObject newHeart = Instantiate(heartPrefab, new Vector3 (-200 + (100 * i),820,0), Quaternion.identity, canvasGM);
+            newHeart.name = "Heart " + i;
+        }
+    }
+
 }
