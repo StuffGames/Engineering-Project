@@ -7,8 +7,8 @@ public class CharacterContollerScript : MonoBehaviour
 
     private Rigidbody2D rb;
     public Animator anim;
-    public Transform canvasGM;
     public GameObject heartPrefab;
+    public Transform canvasGM;
     public Transform groundCheck;
     public Transform wallCheck;
     public LayerMask whatIsGround;
@@ -22,7 +22,6 @@ public class CharacterContollerScript : MonoBehaviour
     public bool grounded = false;
 	public bool wallTouch = false;
 
-    // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -32,7 +31,6 @@ public class CharacterContollerScript : MonoBehaviour
         LivesUI();
     }
 
-    // Update is called once per frame
     void Update()
     {
         int currentLives = lives;
@@ -45,6 +43,11 @@ public class CharacterContollerScript : MonoBehaviour
         {
             lives--;
             Debug.Log(lives);
+        }
+
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            transform.Rotate(0,180,0, Space.Self);
         }
 
         if (Input.GetKeyDown(KeyCode.R))
@@ -118,4 +121,19 @@ public class CharacterContollerScript : MonoBehaviour
         }
     }
 
+    public void EnemyBounce()
+    {
+        rb.velocity = new Vector2(rb.velocity.x, 0);
+        rb.AddForce(new Vector2(0, jumpForce));
+    }
+
+    void OnCollisionEnter2D(Collision2D collisionInfo)
+    {
+        if (collisionInfo.gameObject.tag == "Enemy")
+        {
+            lives--;
+            Debug.Log("YOU DIED");
+            Debug.Log(lives);
+        }
+    }
 }

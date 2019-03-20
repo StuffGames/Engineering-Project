@@ -11,13 +11,11 @@ public class CameraMovementScript : MonoBehaviour
 
     private Vector3 vel = Vector3.zero;
 
-    // Start is called before the first frame update
     void Start()
     {
         
     }
 
-    // Update is called once per frame
     void FixedUpdate()
     {
         transform.position = Vector3.SmoothDamp(transform.position, target.position + offset, ref vel, smoothTime);
