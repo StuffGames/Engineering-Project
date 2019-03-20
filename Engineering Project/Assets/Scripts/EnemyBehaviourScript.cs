@@ -28,6 +28,7 @@ public class EnemyBehaviourScript : MonoBehaviour
             anim.SetBool("isDumb", true);
         }else if (playerTrigger)
         {
+            triggerZone.radius = 10;
             anim.SetBool("isDumb", false);
             Vector3 dir = player.transform.position - transform.position;
             //Debug.Log(dir);

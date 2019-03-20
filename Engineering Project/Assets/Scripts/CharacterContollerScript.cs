@@ -116,7 +116,9 @@ public class CharacterContollerScript : MonoBehaviour
 
         for (int i = lives; i > 0; i--)
         {
-            GameObject newHeart = Instantiate(heartPrefab, new Vector3 (-200 + (100 * i),820,0), Quaternion.identity, canvasGM);
+            GameObject newHeart = Instantiate(heartPrefab, canvasGM);
+            RectTransform heartRect = newHeart.GetComponent<RectTransform>();
+            heartRect.anchoredPosition = new Vector2(-200 + (100 * i), 100);
             newHeart.name = "Heart " + i;
         }
     }
@@ -127,12 +129,24 @@ public class CharacterContollerScript : MonoBehaviour
         rb.AddForce(new Vector2(0, jumpForce));
     }
 
+    public IEnumerator InvincibilityFrames()
+    {
+        Physics2D.IgnoreLayerCollision(8, 9, true);
+        //Debug.Log(Physics2D.GetIgnoreLayerCollision(8,9));
+        anim.SetBool("isHit", true);
+        yield return new WaitForSecondsRealtime(1);
+        anim.SetBool("isHit", false);
+        Physics2D.IgnoreLayerCollision(8, 9, false);
+        //Debug.Log(Physics2D.GetIgnoreLayerCollision(8, 9));
+    }
+
     void OnCollisionEnter2D(Collision2D collisionInfo)
     {
         if (collisionInfo.gameObject.tag == "Enemy")
         {
             lives--;
-            Debug.Log("YOU DIED");
+            StartCoroutine("InvincibilityFrames");
+            LivesUI();
             Debug.Log(lives);
         }
     }
