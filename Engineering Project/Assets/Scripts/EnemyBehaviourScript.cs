@@ -14,6 +14,7 @@ public class EnemyBehaviourScript : MonoBehaviour
 
     private bool playerTrigger = false;
     private bool isDead = false;
+    private bool isAttacking = false;
 
     void Start()
     {
@@ -26,19 +27,28 @@ public class EnemyBehaviourScript : MonoBehaviour
         if (!playerTrigger)
         {
             anim.SetBool("isDumb", true);
-        }else if (playerTrigger)
+        }
+        else if (playerTrigger)
         {
             triggerZone.radius = 10;
             anim.SetBool("isDumb", false);
             Vector3 dir = player.transform.position - transform.position;
             //Debug.Log(dir);
-            if (dir.x < 0)
+            if (dir.x > 0)
             {
-                transform.Rotate(0,180,0, Space.Self);
-                //Maybe do some trial and error for the right Quaternion value idk
+                transform.rotation = new Quaternion(0f, 0f, 0f, 1.0f);
+            }
+            else if (dir.x < 0)
+            {
+                transform.rotation = new Quaternion(0f, 1.0f, 0f, 0f);
             }
             rb.velocity = new Vector2(transform.right.x * 2.5f, 0f);
         }
+
+        /*if (isAttacking)
+        {
+            player.gameObject.SendMessage("Damage");
+        }*/
 
         if (isDead)
         {
@@ -49,7 +59,9 @@ public class EnemyBehaviourScript : MonoBehaviour
 
     void FixedUpdate()
     {
+        Physics2D.IgnoreCollision(playerFeet, GetComponent<BoxCollider2D>());
         playerTrigger = Physics2D.IsTouching(player, triggerZone);
         isDead = Physics2D.IsTouching(playerFeet, headCheck);
+        isAttacking = Physics2D.IsTouching(player, GetComponent<BoxCollider2D>());
     }
 }
