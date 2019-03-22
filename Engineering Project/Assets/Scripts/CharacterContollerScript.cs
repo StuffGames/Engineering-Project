@@ -30,6 +30,7 @@ public class CharacterContollerScript : MonoBehaviour
     private bool isInvincible = false;
     private bool startLevel = false;
     private bool hitBack = false;
+    private bool doubleJump = true;
 
     void Start()
     {
@@ -49,6 +50,8 @@ public class CharacterContollerScript : MonoBehaviour
 
     }
 
+    bool jumpRequest = false;
+
     void Update()
     {
         int currentLives = lives;
@@ -58,6 +61,16 @@ public class CharacterContollerScript : MonoBehaviour
         anim.SetFloat("playerSpeed", Mathf.Abs(rb.velocity.x));
         anim.SetFloat("airSpeed", rb.velocity.y);
         anim.SetBool("isGrounded", grounded);
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            jumpRequest = true;
+
+        }
+        if (Input.GetKeyUp(KeyCode.Space))
+        {
+            jumpRequest = false;
+        }
 
         if (Input.GetKeyDown(KeyCode.K))
         {
@@ -90,7 +103,7 @@ public class CharacterContollerScript : MonoBehaviour
             wallCheck.gameObject.SetActive(false);
             box.enabled = false;
             capsule.enabled = false;
-            rb.AddTorque(100);
+            rb.AddTorque(50);
             CameraMovementScript mainCam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CameraMovementScript>();
             mainCam.isPlayerDead = true;
             youDied.SetActive(true);
@@ -140,8 +153,7 @@ public class CharacterContollerScript : MonoBehaviour
                 hitReady = false;
             }
         }
-
-        if (grounded && Input.GetKey(KeyCode.Space))
+        if (grounded && jumpRequest)
         {
 			rb.velocity = new Vector2 (rb.velocity.x,0);
 			rb.AddForce(new Vector2(0, jumpForce));
@@ -151,11 +163,21 @@ public class CharacterContollerScript : MonoBehaviour
                 startLevel = true;
                 pressToStart.SetActive(false);
             }
+            jumpRequest = false;
         }
         else if (grounded)
         {
             anim.SetBool("isJumping", false);
             bouncing = false;
+            doubleJump = true;
+        }
+
+        if (doubleJump && !grounded && jumpRequest)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, 0);
+            rb.AddForce(new Vector2(0, jumpForce));
+            doubleJump = false;
+            jumpRequest = false;
         }
 
         if (rb.velocity.y < 0)

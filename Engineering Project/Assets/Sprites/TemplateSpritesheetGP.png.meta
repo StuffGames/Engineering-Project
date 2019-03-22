@@ -16,6 +16,10 @@ TextureImporter:
     21300022: TemplateSpritesheetGP_11
     21300024: TemplateSpritesheetGP_12
     21300026: TemplateSpritesheetGP_13
+    21300028: TemplateSpritesheetGP_14
+    21300030: TemplateSpritesheetGP_15
+    21300032: TemplateSpritesheetGP_16
+    21300034: TemplateSpritesheetGP_17
   externalObjects: {}
   serializedVersion: 9
   mipmaps:
@@ -384,6 +388,86 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 645abfd07e948488da5cee1fac8c1f8b
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: TemplateSpritesheetGP_14
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 924
+        width: 21
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 58d50a15ea6a04d10809822965471808
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: TemplateSpritesheetGP_15
+      rect:
+        serializedVersion: 2
+        x: 30
+        y: 924
+        width: 21
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 141dd5e9ba23d4d4cbfb3b142c218c36
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: TemplateSpritesheetGP_16
+      rect:
+        serializedVersion: 2
+        x: 55
+        y: 921
+        width: 21
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fe56ed084a5724d5a96a3309edb40b50
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: TemplateSpritesheetGP_17
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 923
+        width: 21
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 377842978cbed4842a94ead5a3fe344a
       vertices: []
       indices: 
       edges: []
