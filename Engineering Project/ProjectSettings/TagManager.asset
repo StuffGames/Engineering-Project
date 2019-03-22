@@ -7,6 +7,8 @@ TagManager:
   - Canvas
   - Enemy
   - Game Manager
+  - Heart
+  - You Diead
   layers:
   - Default
   - TransparentFX

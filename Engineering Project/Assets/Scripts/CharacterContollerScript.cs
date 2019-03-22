@@ -9,13 +9,15 @@ public class CharacterContollerScript : MonoBehaviour
     public Animator anim;
     public GameObject heartPrefab;
     public SpriteRenderer sr;
-    public Transform canvasGM;
+    private Transform canvasGM;
     public Transform groundCheck;
     public Transform wallCheck;
     public LayerMask whatIsGround;
 	public LayerMask whatIsWall;
     private GameManager gm;
     private Color someColor = new Color(1f, 1f, 1f, 1f);
+    public GameObject youDied;
+    public GameObject pressToStart;
 
     public float speed = 5f;
     public float jumpForce = 500f;
@@ -27,11 +29,12 @@ public class CharacterContollerScript : MonoBehaviour
     private bool bouncing = false;
     private bool isInvincible = false;
     private bool startLevel = false;
+    private bool hitBack = false;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-
+        canvasGM = GameObject.FindGameObjectWithTag("Canvas").transform;
         gm = GameObject.FindGameObjectWithTag("Game Manager").GetComponent<GameManager>();
 
         lives = 3;
@@ -41,6 +44,9 @@ public class CharacterContollerScript : MonoBehaviour
         sr.color = someColor;
 
         Physics2D.IgnoreLayerCollision(8, 9, false);
+
+        rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+
     }
 
     void Update()
@@ -77,7 +83,21 @@ public class CharacterContollerScript : MonoBehaviour
 
         if (lives < 1)
         {
-            gm.SendMessage("PlayerIsDead");
+            rb.constraints = RigidbodyConstraints2D.None;
+            BoxCollider2D box = GetComponent<BoxCollider2D>();
+            CapsuleCollider2D capsule = GetComponent<CapsuleCollider2D>();
+            groundCheck.gameObject.SetActive(false);
+            wallCheck.gameObject.SetActive(false);
+            box.enabled = false;
+            capsule.enabled = false;
+            rb.AddTorque(100);
+            CameraMovementScript mainCam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CameraMovementScript>();
+            mainCam.isPlayerDead = true;
+            youDied.SetActive(true);
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                gm.SendMessage("PlayerIsDead");
+            }
         }
 
         if (currentLives != lives)
@@ -86,8 +106,9 @@ public class CharacterContollerScript : MonoBehaviour
         }
 
         FlashingFrames(isInvincible);
-
     }
+
+    bool hitReady = false;
 
     private void FixedUpdate()
     {
@@ -95,10 +116,30 @@ public class CharacterContollerScript : MonoBehaviour
 
         if (startLevel)
         {
-            rb.velocity = new Vector2(playerRight * speed, rb.velocity.y);
+            if (!hitBack)
+            {
+                rb.velocity = new Vector2(playerRight * speed, rb.velocity.y);
+            }
         }
-        grounded = Physics2D.OverlapBox(groundCheck.position, size, 0, whatIsGround);
-		wallTouch = Physics2D.OverlapCircle(wallCheck.position, radius, whatIsWall);
+
+        if (lives > 0)
+        {
+            grounded = Physics2D.OverlapBox(groundCheck.position, size, 0, whatIsGround);
+            wallTouch = Physics2D.OverlapCircle(wallCheck.position, radius, whatIsWall);
+        }
+
+        if (!grounded)
+        {
+            hitReady = true;
+        }
+        else if (grounded)
+        {
+            if (hitReady)
+            {
+                hitBack = false;
+                hitReady = false;
+            }
+        }
 
         if (grounded && Input.GetKey(KeyCode.Space))
         {
@@ -108,6 +149,7 @@ public class CharacterContollerScript : MonoBehaviour
             if (!startLevel)
             {
                 startLevel = true;
+                pressToStart.SetActive(false);
             }
         }
         else if (grounded)
@@ -130,7 +172,7 @@ public class CharacterContollerScript : MonoBehaviour
     {
         foreach (Transform heart in canvasGM)
         {
-            if(transform.tag != "Canvas")
+            if(heart.tag == "Heart")
             {
                 Destroy(heart.gameObject);
             }
@@ -192,6 +234,9 @@ public class CharacterContollerScript : MonoBehaviour
     {
         if (col.gameObject.tag == "Enemy" && !bouncing)
         {
+            hitBack = true;
+            rb.velocity = new Vector2(0, 0);
+            rb.AddForce(new Vector2(300 * -transform.forward.z, 300));
             StartCoroutine("InvincibilityFrames");
             lives--;
             LivesUI();
