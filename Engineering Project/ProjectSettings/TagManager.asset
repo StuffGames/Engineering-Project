@@ -9,6 +9,9 @@ TagManager:
   - Game Manager
   - Heart
   - You Diead
+  - KillPlane
+  - NextLevel
+  - ExtraLife
   layers:
   - Default
   - TransparentFX

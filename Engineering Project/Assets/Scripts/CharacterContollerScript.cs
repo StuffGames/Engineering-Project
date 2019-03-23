@@ -18,11 +18,12 @@ public class CharacterContollerScript : MonoBehaviour
     private Color someColor = new Color(1f, 1f, 1f, 1f);
     public GameObject youDied;
     public GameObject pressToStart;
+    private CircleCollider2D extraLife;
 
     public float speed = 5f;
     public float jumpForce = 500f;
     private float radius = 0.1f;
-    private int lives;
+    public int lives;
     private Vector2 size = new Vector2(0.71f,0.2f);
     public bool grounded = false;
 	public bool wallTouch = false;
@@ -38,6 +39,8 @@ public class CharacterContollerScript : MonoBehaviour
         canvasGM = GameObject.FindGameObjectWithTag("Canvas").transform;
         gm = GameObject.FindGameObjectWithTag("Game Manager").GetComponent<GameManager>();
 
+        extraLife = GameObject.FindGameObjectWithTag("ExtraLife").GetComponent<CircleCollider2D>();
+
         lives = 3;
 
         LivesUI();
@@ -48,6 +51,13 @@ public class CharacterContollerScript : MonoBehaviour
 
         rb.constraints = RigidbodyConstraints2D.FreezeRotation;
 
+    }
+
+    void Awake()
+    {
+        canvasGM = GameObject.FindGameObjectWithTag("Canvas").transform;
+        lives = 3;
+        LivesUI();
     }
 
     bool jumpRequest = false;
@@ -126,6 +136,15 @@ public class CharacterContollerScript : MonoBehaviour
     private void FixedUpdate()
     {
         float playerRight = transform.right.x;
+
+        if (extraLife != null)
+        {
+            BoxCollider2D player = GetComponent<BoxCollider2D>();
+            if (Physics2D.IsTouching(player, extraLife))
+            {
+                lives = lives + 1;
+            }
+        }
 
         if (startLevel)
         {

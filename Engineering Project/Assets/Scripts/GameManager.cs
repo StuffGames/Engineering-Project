@@ -5,10 +5,17 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+
+    BoxCollider2D player;
+    BoxCollider2D killPlane;
+    BoxCollider2D nextLevel;
+    
     // Start is called before the first frame update
     void Start()
     {
-        
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<BoxCollider2D>();
+        killPlane = GameObject.FindGameObjectWithTag("KillPlane").GetComponent<BoxCollider2D>();
+        nextLevel = GameObject.FindGameObjectWithTag("NextLevel").GetComponent<BoxCollider2D>();
     }
 
     // Update is called once per frame
@@ -17,6 +24,22 @@ public class GameManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && SceneManager.GetActiveScene().buildIndex == 0)
         {
             PlayGame();
+        }
+    }
+
+    void FixedUpdate()
+    {
+        if (player != null && killPlane != null && nextLevel != null)
+        {
+            if (Physics2D.IsTouching(player, killPlane))
+            {
+                CharacterContollerScript controllerScript = player.gameObject.GetComponent<CharacterContollerScript>();
+                controllerScript.lives = 0;
+            }
+            if (Physics2D.IsTouching(player, nextLevel))
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+            }
         }
     }
 
