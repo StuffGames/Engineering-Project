@@ -12,6 +12,8 @@ TagManager:
   - KillPlane
   - NextLevel
   - ExtraLife
+  - EndGame
+  - MenuButton
   layers:
   - Default
   - TransparentFX
@@ -23,9 +25,9 @@ TagManager:
   - 
   - Player
   - Enemy
-  - 
-  - 
-  - 
+  - EndLevel
+  - KillPlane
+  - EndGame
   - 
   - 
   - 

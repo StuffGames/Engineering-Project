@@ -18,7 +18,7 @@ public class CharacterContollerScript : MonoBehaviour
     private Color someColor = new Color(1f, 1f, 1f, 1f);
     public GameObject youDied;
     public GameObject pressToStart;
-    private CircleCollider2D extraLife;
+    //private CircleCollider2D extraLife;
 
     public float speed = 5f;
     public float jumpForce = 500f;
@@ -38,8 +38,6 @@ public class CharacterContollerScript : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         canvasGM = GameObject.FindGameObjectWithTag("Canvas").transform;
         gm = GameObject.FindGameObjectWithTag("Game Manager").GetComponent<GameManager>();
-
-        extraLife = GameObject.FindGameObjectWithTag("ExtraLife").GetComponent<CircleCollider2D>();
 
         lives = 3;
 
@@ -72,6 +70,11 @@ public class CharacterContollerScript : MonoBehaviour
         anim.SetFloat("airSpeed", rb.velocity.y);
         anim.SetBool("isGrounded", grounded);
 
+        if (transform.position.y < -500)
+        {
+            Destroy(gameObject);
+        }
+
         if (Input.GetKeyDown(KeyCode.Space))
         {
             jumpRequest = true;
@@ -82,10 +85,13 @@ public class CharacterContollerScript : MonoBehaviour
             jumpRequest = false;
         }
 
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            lives++;
+        }
         if (Input.GetKeyDown(KeyCode.K))
         {
             lives--;
-            Debug.Log(lives);
         }
 
         if (Input.GetKeyDown(KeyCode.F))
@@ -136,15 +142,6 @@ public class CharacterContollerScript : MonoBehaviour
     private void FixedUpdate()
     {
         float playerRight = transform.right.x;
-
-        if (extraLife != null)
-        {
-            BoxCollider2D player = GetComponent<BoxCollider2D>();
-            if (Physics2D.IsTouching(player, extraLife))
-            {
-                lives = lives + 1;
-            }
-        }
 
         if (startLevel)
         {
@@ -277,7 +274,14 @@ public class CharacterContollerScript : MonoBehaviour
         {
             hitBack = true;
             rb.velocity = new Vector2(0, 0);
-            rb.AddForce(new Vector2(300 * -transform.forward.z, 300));
+            if (lives < 2)
+            {
+                rb.AddForce(new Vector2(350 * -transform.forward.z, 300));
+            }
+            else
+            {
+                rb.AddForce(new Vector2(200 * -transform.forward.z, 300));
+            }
             StartCoroutine("InvincibilityFrames");
             lives--;
             LivesUI();
@@ -285,9 +289,19 @@ public class CharacterContollerScript : MonoBehaviour
         }
     }
 
-    void OnCollisionExit2D(Collision2D col)
+    void OnTriggerEnter2D(Collider2D col)
     {
-        //Debug.Log(col.transform.name);
+        if (col.gameObject.tag == "ExtraLife")
+        {
+            lives++;
+            LivesUI();
+            Destroy(col.gameObject);
+        }
+
+        if (col.gameObject.tag == "KillPlane")
+        {
+            lives = 0;
+        }
     }
 
 }

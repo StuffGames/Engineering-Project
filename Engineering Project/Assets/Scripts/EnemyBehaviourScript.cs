@@ -101,7 +101,7 @@ public class EnemyBehaviourScript : MonoBehaviour
 
         if (rb.velocity.y < 0)
         {
-            rb.gravityScale = 2.5f;
+            rb.gravityScale = 4f;
         }
         else
         {
@@ -113,7 +113,7 @@ public class EnemyBehaviourScript : MonoBehaviour
             player.gameObject.SendMessage("EnemyBounce");
             rb.constraints = RigidbodyConstraints2D.None;
             rb.velocity = new Vector2(0, 0);
-            rb.AddForce(new Vector2 (0, 300));
+            rb.AddForce(new Vector2 (0, 200));
             headCheck.enabled = false;
             BoxCollider2D box = GetComponent<BoxCollider2D>();
             box.enabled = false;
