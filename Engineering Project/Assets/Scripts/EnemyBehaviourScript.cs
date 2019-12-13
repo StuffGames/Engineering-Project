@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EnemyBehaviourScript : MonoBehaviour
 {
-
+    public AudioSource enemyDeath;
     public CircleCollider2D triggerZone;
     public BoxCollider2D player;
     public CapsuleCollider2D headCheck;
@@ -29,6 +29,7 @@ public class EnemyBehaviourScript : MonoBehaviour
 
     void Update()
     {
+        anim.SetFloat("enemySpeed", Mathf.Abs(rb.velocity.x)/2);
 
         if (stomped)
         {
@@ -57,7 +58,8 @@ public class EnemyBehaviourScript : MonoBehaviour
             }
             if (!isDead)
             {
-                rb.velocity = new Vector2(transform.right.x * 2.5f, rb.velocity.y);
+                //rb.velocity = new Vector2(transform.right.x * 2.5f, rb.velocity.y);
+                rb.AddForce(new Vector2 (transform.right.x * 2.5f, 0));
             }
         }
 
@@ -110,6 +112,10 @@ public class EnemyBehaviourScript : MonoBehaviour
 
         if (stomped)
         {
+            if(!enemyDeath.isPlaying)
+            {
+                enemyDeath.Play();
+            }
             player.gameObject.SendMessage("EnemyBounce");
             rb.constraints = RigidbodyConstraints2D.None;
             rb.velocity = new Vector2(0, 0);

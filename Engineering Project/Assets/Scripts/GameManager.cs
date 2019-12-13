@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-
+    private AudioSource source;
     BoxCollider2D player;
     BoxCollider2D killPlane;
     BoxCollider2D nextLevel;
@@ -17,11 +17,37 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<BoxCollider2D>();
-        killPlane = GameObject.FindGameObjectWithTag("KillPlane").GetComponent<BoxCollider2D>();
-        nextLevel = GameObject.FindGameObjectWithTag("NextLevel").GetComponent<BoxCollider2D>();
-        box = GameObject.FindGameObjectWithTag("EndGame").GetComponent<BoxCollider2D>();
-        cameraMove = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CameraMovementScript>();
+
+        if (gameObject.GetComponent<AudioSource>() != null)
+        {
+            source = gameObject.GetComponent<AudioSource>();
+        }
+
+        if (GameObject.FindGameObjectWithTag("Player") != null)
+        {
+            player = GameObject.FindGameObjectWithTag("Player").GetComponent<BoxCollider2D>();
+        }
+        if (GameObject.FindGameObjectWithTag("KillPlane") != null)
+        {
+            killPlane = GameObject.FindGameObjectWithTag("KillPlane").GetComponent<BoxCollider2D>();
+        }
+        if (GameObject.FindGameObjectWithTag("NextLevel") != null)
+        {
+            nextLevel = GameObject.FindGameObjectWithTag("NextLevel").GetComponent<BoxCollider2D>();
+        }
+        if(GameObject.FindGameObjectWithTag("EndGame") != null)
+        {
+            box = GameObject.FindGameObjectWithTag("EndGame").GetComponent<BoxCollider2D>();
+        }
+        else
+        {
+            Debug.Log("null");
+            Debug.Log(GameObject.FindGameObjectWithTag("EndGame"));
+        }
+        if(GameObject.FindGameObjectWithTag("MainCamera") != null)
+        {
+            cameraMove = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CameraMovementScript>();
+        }
     }
 
     // Update is called once per frame
@@ -38,6 +64,10 @@ public class GameManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space) && SceneManager.GetActiveScene().buildIndex == 0)
         {
+            if (!source.isPlaying)
+            {
+                source.Play();
+            }
             PlayGame();
         }
         if (gameEnded && Physics2D.IsTouching(player, box))
@@ -48,6 +78,16 @@ public class GameManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && gameIsDone.activeSelf == true && SceneManager.GetActiveScene().buildIndex == 3)
         {
             BackToMenu();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape) && SceneManager.GetActiveScene().buildIndex != 0)
+        {
+            BackToMenu();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape) && SceneManager.GetActiveScene().buildIndex == 0)
+        {
+            QuitGame();
         }
 
     }
@@ -92,4 +132,10 @@ public class GameManager : MonoBehaviour
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
+
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
+
 }

@@ -8972,6 +8972,11 @@ PrefabInstance:
       propertyPath: playerFeet
       value: 
       objectReference: {fileID: 969834345}
+    - target: {fileID: 1095904638841203810, guid: 1e7e77eebcb8c2444b942ae122c7c041,
+        type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 6200000, guid: b7cb1f535b0f8494493ebbf017fa82bd, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1e7e77eebcb8c2444b942ae122c7c041, type: 3}
 --- !u!1001 &6033924240368045117

@@ -5,6 +5,10 @@ using UnityEngine;
 public class CharacterContollerScript : MonoBehaviour
 {
 
+    public AudioSource jumpingSound;
+    public AudioSource hitSound;
+    public AudioSource deathSound;
+
     private Rigidbody2D rb;
     public Animator anim;
     public GameObject heartPrefab;
@@ -33,6 +37,9 @@ public class CharacterContollerScript : MonoBehaviour
     private bool hitBack = false;
     private bool doubleJump = true;
 
+    private float xPos;
+    private float yPos;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -59,9 +66,11 @@ public class CharacterContollerScript : MonoBehaviour
     }
 
     bool jumpRequest = false;
-
+    bool soundOnce = true;
     void Update()
     {
+        //Debug.Log("(" + xPos + ", "+ yPos +")");
+
         int currentLives = lives;
 
         sr.color = someColor;
@@ -78,21 +87,20 @@ public class CharacterContollerScript : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             jumpRequest = true;
-
         }
         if (Input.GetKeyUp(KeyCode.Space))
         {
             jumpRequest = false;
         }
 
-        if (Input.GetKeyDown(KeyCode.L))
+        /*if (Input.GetKeyDown(KeyCode.L))
         {
             lives++;
         }
         if (Input.GetKeyDown(KeyCode.K))
         {
             lives--;
-        }
+        }*/
 
         if (Input.GetKeyDown(KeyCode.F))
         {
@@ -112,6 +120,12 @@ public class CharacterContollerScript : MonoBehaviour
 
         if (lives < 1)
         {
+            anim.SetBool("isDead", true);
+            if (!deathSound.isPlaying && soundOnce)
+            {
+                deathSound.Play();
+                soundOnce = false;
+            }
             rb.constraints = RigidbodyConstraints2D.None;
             BoxCollider2D box = GetComponent<BoxCollider2D>();
             CapsuleCollider2D capsule = GetComponent<CapsuleCollider2D>();
@@ -171,6 +185,11 @@ public class CharacterContollerScript : MonoBehaviour
         }
         if (grounded && jumpRequest)
         {
+            if (!jumpingSound.isPlaying)
+            {
+                jumpingSound.Play();
+            }
+            xPos = transform.position.x;
 			rb.velocity = new Vector2 (rb.velocity.x,0);
 			rb.AddForce(new Vector2(0, jumpForce));
             anim.SetBool("isJumping", true);
@@ -180,6 +199,7 @@ public class CharacterContollerScript : MonoBehaviour
                 pressToStart.SetActive(false);
             }
             jumpRequest = false;
+            yPos = transform.position.y;
         }
         else if (grounded)
         {
@@ -190,6 +210,7 @@ public class CharacterContollerScript : MonoBehaviour
 
         if (doubleJump && !grounded && jumpRequest)
         {
+            jumpingSound.Play();
             rb.velocity = new Vector2(rb.velocity.x, 0);
             rb.AddForce(new Vector2(0, jumpForce));
             doubleJump = false;
@@ -272,6 +293,7 @@ public class CharacterContollerScript : MonoBehaviour
     {
         if (col.gameObject.tag == "Enemy" && !bouncing)
         {
+            hitSound.Play();
             hitBack = true;
             rb.velocity = new Vector2(0, 0);
             if (lives < 2)
